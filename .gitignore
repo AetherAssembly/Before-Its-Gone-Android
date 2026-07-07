@@ -1,0 +1,36 @@
+# Android / Gradle
+*.iml
+.gradle/
+local.properties
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/assetWizardSettings.xml
+.idea/dictionaries
+.idea/libraries
+.idea/caches
+.idea/modules.xml
+
+# Build outputs
+build/
+*/build/
+
+# Keystore files — NEVER commit signing keys
+*.jks
+*.keystore
+release.keystore
+
+# Room export schemas are tracked; exclude generated test DBs
+*.db
+*.db-shm
+*.db-wal
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# OS
+.DS_Store
+Thumbs.db
