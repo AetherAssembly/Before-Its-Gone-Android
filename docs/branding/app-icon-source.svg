@@ -1,0 +1,68 @@
+<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" width="300" height="300">
+  <!-- Background -->
+  <rect width="300" height="300" fill="#0a0a14" rx="54"/>
+
+  <!-- Stars -->
+  <circle cx="40" cy="50" r="1.5" fill="#fff" opacity="0.7"/>
+  <circle cx="245" cy="35" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="265" cy="80" r="1.5" fill="#fff" opacity="0.5"/>
+  <circle cx="25" cy="130" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="270" cy="160" r="1" fill="#fff" opacity="0.4"/>
+  <circle cx="50" cy="230" r="1.5" fill="#fff" opacity="0.5"/>
+  <circle cx="255" cy="240" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="30" cy="270" r="1" fill="#fff" opacity="0.4"/>
+  <circle cx="260" cy="270" r="1.5" fill="#fff" opacity="0.5"/>
+
+  <!-- Carrot body -->
+  <path d="M 186.77 71.15 C 186.77 71.15, 210.04 104.07, 187.4 159.72 C 174.72 186.9, 152.37 204.07, 121.26 211.63 C 107.06 182.93, 105.84 154.78, 118.52 127.6 C 143.87 73.22, 186.77 71.15, 186.77 71.15 Z" fill="#FF7F00"/>
+
+  <!-- Texture lines -->
+  <path d="M 136.33 108.32 Q 165.64 116.47 190.71 133.68" stroke="#E06000" stroke-width="1.5" fill="none" opacity="0.6"/>
+  <path d="M 125.16 125.18 Q 157.18 134.59 184.98 153.07" stroke="#E06000" stroke-width="1.5" fill="none" opacity="0.6"/>
+  <path d="M 116.71 143.3 Q 148.73 152.72 176.53 171.2" stroke="#E06000" stroke-width="1.5" fill="none" opacity="0.6"/>
+  <path d="M 110.98 162.7 Q 140.28 170.85 165.36 188.06" stroke="#E06000" stroke-width="1.5" fill="none" opacity="0.6"/>
+  <path d="M 108.81 181.55 Q 132.25 188.06 152.31 201.83" stroke="#E06000" stroke-width="1.5" fill="none" opacity="0.6"/>
+
+  <!-- Highlight -->
+  <ellipse cx="152.95" cy="110.55" rx="8" ry="18" fill="#FFAA44" opacity="0.4" transform="rotate(10, 152.95, 110.55)"/>
+
+  <!-- Porthole outer -->
+  <circle cx="157.18" cy="134.59" r="14" fill="#1a1a2e" stroke="#FFAA44" stroke-width="2.5"/>
+  <!-- Porthole inner -->
+  <circle cx="157.18" cy="134.59" r="10" fill="#0d1b3e" opacity="0.9"/>
+  <!-- Stars in porthole -->
+  <circle cx="154.83" cy="130.18" r="1" fill="#fff" opacity="0.9"/>
+  <circle cx="159.06" cy="137.67" r="0.7" fill="#fff" opacity="0.7"/>
+  <circle cx="153.26" cy="138.28" r="0.5" fill="#fff" opacity="0.6"/>
+
+  <!-- Fins -->
+  <path d="M 105.84 154.79 L 75.64 162.77 L 95.27 177.44 Z" fill="#CC5500"/>
+  <path d="M 174.72 186.9 L 188.02 215.17 L 164.15 209.56 Z" fill="#CC5500"/>
+
+  <!-- Green leaves -->
+  <path d="M 186.77 71.15 C 191.29 56.71, 186.46 43.42, 175.53 52.67 C 184.04 53.33, 185.62 61.79, 186.77 71.15 Z" fill="#3a7d1e"/>
+  <path d="M 186.77 71.15 C 194.92 58.4, 208.21 53.56, 208.15 67.88 C 202.17 61.78, 194.68 66.01, 186.77 71.15 Z" fill="#4a9a25"/>
+  <path d="M 183.2 71.7 C 177.4 55.75, 163.93 53.88, 160.67 65.6 C 171.3 61.73, 178.55 65.11, 183.2 71.7 Z" fill="#3a7d1e"/>
+  <path d="M 188.64 74.23 C 204.59 68.43, 214.68 77.55, 207.8 87.58 C 203.93 76.95, 196.68 73.56, 188.64 74.23 Z" fill="#4a9a25"/>
+  <path d="M 179.22 73.15 C 168.94 57.32, 153.3 57.75, 151.0 72.13 C 162.9 65.54, 171.48 68.44, 179.22 73.15 Z" fill="#2d6118" opacity="0.9"/>
+  <path d="M 190.09 78.22 C 208.82 75.92, 218.55 88.18, 209.01 99.18 C 206.41 85.83, 198.67 81.12, 190.09 78.22 Z" fill="#3a7d1e" opacity="0.9"/>
+
+  <!-- Exhaust flame -->
+  <path d="M 121.26 211.63 C 109.79 217.31, 96.8 216.77, 88.64 229.52 C 95.65 223.96, 106.4 224.56, 111.54 232.47 C 120.91 231.32, 128.28 239.17, 128.52 248.12 C 133.05 233.68, 124.29 224.07, 121.26 211.63 Z" fill="#FF5500" opacity="0.9"/>
+
+  <!-- Root tendrils -->
+  <path d="M 119.99 214.35 C 110.39 223.11, 99.7 224.74, 94.75 240.09" stroke="#FF8800" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <path d="M 119.99 214.35 C 119.45 227.34, 125.08 236.58, 116.5 250.23" stroke="#FF8800" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <path d="M 113.77 215.86 C 97.76 219.43, 85.32 222.45, 75.36 234.36" stroke="#CC4400" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M 122.84 220.09 C 130.39 234.64, 136.07 246.12, 133.36 261.41" stroke="#CC4400" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Smoke puffs -->
+  <circle cx="74.93" cy="235.26" r="5" fill="#CC4400" opacity="0.35"/>
+  <circle cx="132.94" cy="262.31" r="5" fill="#CC4400" opacity="0.35"/>
+  <circle cx="94.33" cy="241.0" r="4" fill="#FF6600" opacity="0.3"/>
+  <circle cx="116.08" cy="251.14" r="4" fill="#FF6600" opacity="0.3"/>
+  <circle cx="102.24" cy="252.41" r="6" fill="#FF8800" opacity="0.25"/>
+
+  <!-- Inner flame core -->
+  <path d="M 121.26 211.63 C 114.68 216.28, 108.52 220.03, 112.81 229.76 C 123.02 226.79, 121.93 219.66, 121.26 211.63 Z" fill="#FFD700" opacity="0.85"/>
+</svg>
