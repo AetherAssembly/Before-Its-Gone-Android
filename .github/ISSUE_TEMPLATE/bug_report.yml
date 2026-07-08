@@ -1,0 +1,63 @@
+name: Bug Report
+description: Report a bug in Before It's Gone for Android
+labels: ["bug"]
+body:
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: Device model (e.g. Pixel 8, Samsung Galaxy S24)
+    validations:
+      required: true
+
+  - type: input
+    id: android-version
+    attributes:
+      label: Android version
+      description: e.g. Android 14 (API 34)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: flavor
+    attributes:
+      label: App flavor
+      options:
+        - Play Store (ML Kit)
+        - F-Droid / IzzyOnDroid (ZXing)
+        - Direct APK from GitHub Releases (specify flavor in description)
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: App version
+      description: From Settings → About (e.g. 1.0.0)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open app
+        2. Tap ...
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true

@@ -1,0 +1,3 @@
+Initial release of Before It's Gone for Android.
+
+Track food expiry dates, scan barcodes, manage your pantry inventory, and never waste food again — all offline-first with optional Supabase cloud sync.

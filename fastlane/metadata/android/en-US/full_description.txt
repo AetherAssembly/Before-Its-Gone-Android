@@ -1,0 +1,22 @@
+Before It's Gone helps you track what's in your fridge, freezer, and pantry — and alerts you before things expire.
+
+FEATURES
+• Inventory tracking across fridge, freezer, and pantry (with custom locations)
+• Expiry date alerts via Android notifications — no account required
+• Barcode scanning to look up product names and shelf-life data from Open Food Facts
+• Shopping list based on low-stock items
+• Waste log to track what you threw away and why
+• Recipe suggestions when items are about to expire (powered by TheMealDB)
+• Optional Supabase cloud sync to share inventory across devices
+• JSON and CSV import/export, fully compatible with the Before It's Gone desktop app
+• Dark and light theme, Material You dynamic color
+
+PRIVACY FIRST
+All data is stored on your device in a local Room database. The camera is used only for barcode scanning and photo capture — frames are processed on-device and never transmitted. Barcode lookups contact Open Food Facts only when you trigger them. Notifications are generated locally. No tracking, no ads, no accounts required.
+
+OPEN SOURCE
+Before It's Gone is free and open-source software, licensed under AGPL-3.0. Source code is available at github.com/AetherAssembly/Before-Its-Gone-Android.
+
+TWO FLAVORS
+• Google Play edition: uses ML Kit for fast on-device barcode scanning
+• F-Droid / IzzyOnDroid edition: uses ZXing, fully free of Google services — same features, no GMS dependency
