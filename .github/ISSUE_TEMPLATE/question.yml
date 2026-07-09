@@ -1,0 +1,25 @@
+name: Question / Support
+description: Ask a question or get help with Before It's Gone for Android
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before posting, check the [docs](../docs) and open [Discussions](../../discussions) for general questions.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: What do you need help with?
+      description: Describe your question or what you're trying to figure out.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Device, Android version, app version, flavor (Play / FOSS), and any other relevant details.
+    validations:
+      required: false

@@ -1,0 +1,262 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+      - 'v*-beta.*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    name: Create draft release
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+      is_beta: ${{ steps.channel.outputs.is_beta }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract tag name
+        id: tag
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+
+      - name: Detect channel
+        id: channel
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+$ ]]; then
+            echo "is_beta=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_beta=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PRERELEASE_FLAG=""
+          if [[ "${{ steps.channel.outputs.is_beta }}" == "true" ]]; then
+            PRERELEASE_FLAG="--prerelease"
+          fi
+          gh release create "${{ steps.tag.outputs.tag }}" \
+            --draft \
+            --title "Before It's Gone ${{ steps.tag.outputs.tag }}" \
+            --notes "Release in progress..." \
+            $PRERELEASE_FLAG
+
+  build:
+    name: Build & sign
+    needs: create-release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Decode keystore
+        env:
+          KEYSTORE_B64: ${{ secrets.RELEASE_KEYSTORE_B64 }}
+        run: echo "$KEYSTORE_B64" | base64 -d > app/release.keystore
+
+      - name: Build signed APKs
+        env:
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        run: |
+          ./gradlew assemblePlayRelease assembleFossRelease \
+            -Pandroid.injected.signing.store.file=app/release.keystore \
+            -Pandroid.injected.signing.store.password=$STORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+
+      - name: Build signed AAB (stable only)
+        if: needs.create-release.outputs.is_beta != 'true'
+        env:
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        run: |
+          ./gradlew bundlePlayRelease \
+            -Pandroid.injected.signing.store.file=app/release.keystore \
+            -Pandroid.injected.signing.store.password=$STORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+
+      - name: Upload artifacts to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          find app/build/outputs/apk -name "*.apk" \
+               app/build/outputs/bundle -name "*.aab" 2>/dev/null \
+          | sort | while read -r f; do
+            echo "Uploading $f..."
+            gh release upload "$TAG" "$f" --clobber
+          done
+
+      - name: Clean up keystore
+        if: always()
+        run: rm -f app/release.keystore
+
+  publish-release:
+    name: Publish release
+    needs: [create-release, build]
+    if: always() && !failure() && !cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download release artifacts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          gh release download "$TAG" --dir ./artifacts
+
+      - name: Build release notes
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VER="${TAG#v}"
+          PREV_TAG=$(git tag --sort=-v:refname | grep -v "^${TAG}$" | head -1 || true)
+          IS_BETA="${{ needs.create-release.outputs.is_beta }}"
+          export TAG VER PREV_TAG IS_BETA
+          python3 << 'PYEOF'
+          import os, re, hashlib, glob
+          from pathlib import Path
+
+          tag      = os.environ['TAG']
+          ver      = os.environ['VER']
+          prev_tag = os.environ.get('PREV_TAG', '').strip()
+          is_beta  = os.environ.get('IS_BETA', 'false') == 'true'
+          artifacts_dir = Path('./artifacts')
+          base_url = f"https://github.com/AetherAssembly/Before-Its-Gone-Android/releases/download/{tag}"
+
+          # --- Parse CHANGELOG for this version ---
+          changelog = Path('CHANGELOG.md').read_text()
+          section_m = re.search(
+              r'## \[' + re.escape(ver) + r'\].*?\n(.*?)(?=\n---\n|\n## \[|\Z)',
+              changelog, re.DOTALL
+          )
+          section = section_m.group(1).strip() if section_m else ''
+
+          def subsection(text, heading):
+              m = re.search(r'### ' + heading + r'\n(.*?)(?=\n### |\Z)', text, re.DOTALL)
+              return m.group(1).strip() if m else ''
+
+          added   = subsection(section, 'Added')
+          fixed   = subsection(section, 'Fixed')
+          changed = subsection(section, 'Changed')
+
+          # --- SHA256 helpers ---
+          def sha256(path):
+              h = hashlib.sha256()
+              with open(path, 'rb') as f:
+                  for chunk in iter(lambda: f.read(65536), b''):
+                      h.update(chunk)
+              return h.hexdigest()
+
+          def find_one(*patterns):
+              for pat in patterns:
+                  matches = sorted(glob.glob(str(artifacts_dir / pat)))
+                  if matches:
+                      return Path(matches[0])
+              return None
+
+          def row(label, path):
+              if not path or not path.exists():
+                  return None
+              url = f"{base_url}/{path.name}"
+              return f"| {label} | [{path.name}]({url}) | `{sha256(path)}` |"
+
+          table_rows = list(filter(None, [
+              row("Android APK (play flavor — ML Kit)",  find_one("*play*release*.apk")),
+              row("Android APK (foss flavor — ZXing)",   find_one("*foss*release*.apk")),
+              row("Android AAB (Play Store submission)", find_one("*.aab")),
+          ]))
+
+          compare_link = (
+              f"https://github.com/AetherAssembly/Before-Its-Gone-Android/compare/{prev_tag}...{tag}"
+              if prev_tag else
+              f"https://github.com/AetherAssembly/Before-Its-Gone-Android/releases/tag/{tag}"
+          )
+
+          # --- Assemble body ---
+          parts = [f"## Before It's Gone Android: {tag}", ""]
+
+          if is_beta:
+              parts += [
+                  "> [!WARNING]",
+                  "> **This is a beta release** and may contain bugs. It is intended for testing only.",
+                  "> Install the [latest stable release](https://github.com/AetherAssembly/Before-Its-Gone-Android/releases/latest) for everyday use.",
+                  "",
+              ]
+
+          if added:
+              parts += ["### What's new", "", added, ""]
+          if fixed:
+              parts += ["### Bug fixes", "", fixed, ""]
+          if changed:
+              parts += ["### Changes", "", changed, ""]
+
+          parts += [
+              "---", "",
+              "### Downloads", "",
+              "| Variant | File | SHA-256 |",
+              "|---|---|---|",
+              *table_rows, "",
+              "#### Which APK should I install?", "",
+              "- **play** — includes ML Kit for barcode scanning. Use this if you sideloaded from here and want the best scanning experience.",
+              "- **foss** — uses ZXing, no Google dependencies. Use this if you installed from F-Droid or IzzyOnDroid, or prefer a fully open-source build.",
+              "",
+              "#### Verify a download", "",
+              "```bash",
+              f'sha256sum "app-foss-release.apk"',
+              "```", "",
+              "---", "",
+              "### Installing the APK", "",
+              "1. Download the APK for your preferred flavor above.",
+              "2. On your Android device, go to **Settings → Apps → Special app access → Install unknown apps** and allow your browser or file manager.",
+              "3. Open the downloaded APK and tap **Install**.",
+              "",
+              "Existing installs from the same flavor will update in place. Switching between flavors requires uninstalling first (different signing is not an issue — both are signed with the same key, but the flavor suffix differs).",
+              "",
+              "---", "",
+              "### Full changelog", "",
+              f"<!-- {compare_link} -->",
+          ]
+
+          Path('release-body.md').write_text('\n'.join(parts))
+          print("release-body.md written")
+          PYEOF
+
+      - name: Publish release with notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PRERELEASE_FLAG=""
+          if [[ "${{ needs.create-release.outputs.is_beta }}" == "true" ]]; then
+            PRERELEASE_FLAG="--prerelease"
+          fi
+          gh release edit "${GITHUB_REF#refs/tags/}" \
+            --notes-file release-body.md \
+            --draft=false \
+            $PRERELEASE_FLAG
