@@ -1,3 +1,11 @@
-Initial release of Before It's Gone for Android.
+First beta release of Before It's Gone for Android.
 
-Track food expiry dates, scan barcodes, manage your pantry inventory, and never waste food again — all offline-first with optional Supabase cloud sync.
+• Inventory tracking with expiry dates, barcode scanning, and low-stock alerts
+• Shopping list auto-generated from low-stock items
+• Waste log with category breakdown
+• Recipe suggestions for expiring ingredients via TheMealDB
+• Daily expiry notifications via WorkManager
+• Optional Supabase cloud sync, compatible with the desktop app
+• JSON and CSV import/export
+• Material You dynamic color, dark/light theme
+• Two flavors: ML Kit (Play) and ZXing (F-Droid/IzzyOnDroid)

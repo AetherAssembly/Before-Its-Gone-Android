@@ -3,16 +3,22 @@
 .gradle/
 local.properties
 .idea/
-.kotlin
+.kotlin/
+.cxx/
 
 # Build outputs
 build/
 */build/
+captures/
+*.ap_
+*.hprof
 
 # Keystore files — NEVER commit signing keys
 *.jks
 *.keystore
-release.keystore
+
+# Google Services config — added per-flavor as a CI secret
+google-services.json
 
 # Room export schemas are tracked; exclude generated test DBs
 *.db
@@ -28,3 +34,6 @@ fastlane/test_output
 # OS
 .DS_Store
 Thumbs.db
+
+# Internal maintainer notes — not for public docs
+docs/packaging/

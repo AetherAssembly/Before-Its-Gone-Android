@@ -1,9 +1,10 @@
-# Before It's Gone — Android
+# Before It's Gone for Android
 
 > Track what's in your fridge, freezer, and pantry before it expires.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/AetherAssembly/Before-Its-Gone-Android/ci.yml?label=CI)](https://github.com/AetherAssembly/Before-Its-Gone-Android/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/AetherAssembly/Before-Its-Gone-Android?label=stable)](https://github.com/AetherAssembly/Before-Its-Gone-Android/releases/latest)
+[![Beta](https://img.shields.io/github/v/release/AetherAssembly/Before-Its-Gone-Android?include_prereleases&filter=*-beta*&label=beta&color=orange)](https://github.com/AetherAssembly/Before-Its-Gone-Android/releases)
 [![License: AGPL v3](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 [![Play Store](https://img.shields.io/badge/Play_Store-coming_soon-3DDC84?logo=google-play&logoColor=white)](#)
 [![F-Droid](https://img.shields.io/badge/F--Droid-coming_soon-1976D2?logo=f-droid&logoColor=white)](#)
@@ -78,6 +79,20 @@ chmod +x gradlew
 
 Or open the project root in Android Studio and select a build variant from the Build Variants panel.
 
+### Install on a device
+
+The easiest way is to grab a signed APK directly from the [releases page](https://github.com/AetherAssembly/Before-Its-Gone-Android/releases):
+
+1. Download `app-foss-release.apk` (no Google dependencies) or `app-play-release.apk` (ML Kit barcode scanning).
+2. On your device go to **Settings → Apps → Special app access → Install unknown apps** and allow your browser or file manager.
+3. Open the downloaded APK and tap **Install**.
+
+To build and install a debug APK from source with a connected device (USB debugging enabled):
+
+```bash
+./gradlew installFossDebug   # build and push directly to device
+```
+
 ### Product flavors
 
 | Flavor | Barcode scanning | Distribution |
@@ -94,7 +109,8 @@ Both flavors use CameraX for the camera layer. The `foss` flavor has no Google s
 - [Architecture](docs/architecture.md): module layout, MVVM, Hilt DI, Room schema, WorkManager, CameraX flavor split
 - [Data Model](docs/data-model.md): `InventoryItem` field reference, Kotlin types, Room columns
 - [Import & Export Format](docs/import-export-format.md): JSON/CSV format, compatibility with the desktop app
-- [Release Checklist](docs/release-checklist.md): pre-release testing and store submission steps
+- [Cloud Sync](docs/cloud-sync.md): Supabase project setup, SQL migration, and sync behaviour
+- [API Setup](docs/api-setup.md): TheMealDB and Supabase integration details
 
 ---
 
