@@ -1,0 +1,5 @@
+package org.aetherassembly.beforeitsgone.ui.theme
+
+import androidx.compose.material3.Typography
+
+val Typography = Typography()
