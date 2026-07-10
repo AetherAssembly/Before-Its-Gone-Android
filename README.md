@@ -93,6 +93,16 @@ To build and install a debug APK from source with a connected device (USB debugg
 ./gradlew installFossDebug   # build and push directly to device
 ```
 
+**Wireless ADB (Android 11+):** no cable needed. On your device go to **Developer options → Wireless debugging**, tap **Pair device with pairing code**, then on your machine:
+
+```bash
+adb pair <device-ip>:<pair-port>   # enter the 6-digit code shown on screen
+adb connect <device-ip>:<port>     # port shown under "Wireless debugging" after pairing
+./gradlew installFossDebug
+```
+
+On Android 10 and below, enable USB debugging, connect once via cable, then run `adb tcpip 5555` before unplugging — after that `adb connect <device-ip>:5555` works wirelessly.
+
 ### Product flavors
 
 | Flavor | Barcode scanning | Distribution |
