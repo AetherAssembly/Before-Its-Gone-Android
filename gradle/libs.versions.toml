@@ -16,7 +16,7 @@ supabase-kt = "3.1.4"
 coil = "3.2.0"
 junit5 = "5.12.2"
 turbine = "1.2.0"
-coroutines = "1.10.2"
+coroutines = "1.11.0"
 mockk = "1.14.2"
 robolectric = "4.13"
 
