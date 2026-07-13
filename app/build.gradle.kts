@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "org.aetherassembly.beforeitsgone"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "org.aetherassembly.beforeitsgone"
